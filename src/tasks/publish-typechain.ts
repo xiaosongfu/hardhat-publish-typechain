@@ -71,3 +71,10 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     exec.execSync("npm publish", { cwd: OUTPUT_DIR });
   },
 );
+
+// task alias
+task("pub-type", "Publish typechain to registry").setAction(
+  async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
+    await hre.run("publish-typechain");
+  },
+);

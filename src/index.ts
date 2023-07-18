@@ -1,10 +1,15 @@
 import { extendConfig } from "hardhat/config";
 import { HardhatPluginError } from "hardhat/plugins";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
-
 import { PLUGIN_NAME, defaultEthers, defaultTypescript } from "./config";
-import "./tasks/publish-typechain"; // import `publish-typechain` task
-import "./type-extensions"; // This import is needed to let the TypeScript compiler know that it should include your type extensions in your npm package's types file.
+
+// This import is needed to let the TypeScript compiler know that it should include your type
+// extensions in your npm package's types file.
+import "./type-extensions";
+
+// Import tasks
+import "./tasks/publish-typechain";
+import "./tasks/clean-publish-typechain";
 
 extendConfig(
   (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
