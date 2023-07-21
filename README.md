@@ -42,7 +42,7 @@ example:
 
 ```
 publishTypechain: {
-    name: "seed-contracts",
+    name: "pepefork-contracts",
     version: "0.1.0",
     ignoreContracts: ["MockERC20"],
     authToken: process.env.AUTH_TOKEN || "npm_pZB...zyP",
