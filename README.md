@@ -1,45 +1,90 @@
-## how to publish
+## hardhat Publish Typechain
 
-first, you need login to registry.
+Publish generated typechain-types to NPM.
 
-for registry.npmjs.org, you can login with:
+`npx hardhat typechain` task will generate `typechain-types` directory, which contains full-featured typescript code for interactive with our contracts, so we can use those code in our web project to let interacting with contracts more efficiency with power of typescript, like code hint, read function definition.
 
-```
-$ npm login --scope=@NAMESPACE --auth-type=legacy --registry=https://npm.pkg.github.com
-
-> Username: USERNAME
-> Password: TOKEN
-```
-
-for github registry, you can login with:
+## Install
 
 ```
-$ npm login --registry=https://registry.npmjs.org
-Username: USERNAME
-Password: PASSWORD
-Email: (this IS public) EMAIL
-npm notice Please check your email for a one-time password (OTP)
-Enter one-time password: ONE_TIME_PASSWORD
+npm install --save-dev hardhat-publish-typechain
+# or
+yarn add --dev hardhat-publish-typechain
 ```
 
-then, you need to add a token to .npmrc file.
+## Included Commands
 
-for registry.npmjs.org, you can add a line to .npmrc file:
+- `npx hardhat publish-typechain`: Publish typechain to NPM.
+- `npx hardhat clean-publish-typechain`: Delete `publish-typechain` directory.
 
-```
-//registry.npmjs.org/:_authToken=<your token>
-```
+## Usage
 
-for github registry, you can add a line to .npmrc file:
-
-```
-//npm.pkg.github.com/:_authToken=<your token>
-```
-
-last, you can publish with:
+Load plugin in Hardhat config:
 
 ```
-$ npm run build
-
-$ npm publish
+require('hardhat-publish-typechain');
+# or
+import 'hardhat-publish-typechain';
 ```
+
+Add configuration under `publishTypechain` key:
+
+| option            | description                                                                    | optional | default  |
+|-------------------|--------------------------------------------------------------------------------|----------|----------|
+| `name`            | npm package's name                                                             | false    |          |
+| `version`         | npm package's version                                                          | false    |          |
+| `ethers`          | version of `ethers` library                                                    | true     | `^5.7.2` |
+| `typescript`      | version of `typescript` library                                                | true     | `^4.9.5` |
+| `ignoreContracts` | which contracts wants to ignore                                                | true     | `[]`     |
+| `authToken`       | auth token for publish npm package to npm official registry or GitHub registry | false    |          |
+
+example:
+
+```
+publishTypechain: {
+    name: "seed-contracts",
+    version: "0.1.0",
+    ignoreContracts: ["MockERC20"],
+    authToken: process.env.AUTH_TOKEN || "npm_pZB...zyP",
+}
+```
+!! before executing `npx hardhat publish-typechain` task, you must logined to npm official registry or GitHub registry, for how to login please read official documents.
+!! **npm official registry** and **GitHub registry** has different format auth token, **npm official registry**'s auth token is start with `npm_` and **GitHub registry**'s auth token is start with `ghp_`, this plugin will publish to relevant registry according to your auth token automatic, so please make sure you use the right auth token for the right registry.
+
+## Use published npm package in web project
+
+When npm package published, we can install it, import it and use it in our web project.
+
+Here we use [erc-tokens](https://www.npmjs.com/package/erc-tokens) package as example.
+
+first, install it:
+
+```
+$ npm i erc-tokens
+```
+
+then, we can import contract's typescript type and abi, and then use them to create a contract instance and interactive with it:
+
+```
+import { MMERC20 } from "erc-tokens/dist/contracts";
+import { MMERC20ABI } from "erc-tokens/dist/abi";
+```
+
+```
+const usdc = await new ethers.Contract("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f", MMERC20ABI, provider) as unknown as MMERC20;
+const balance = await usdc.balanceOf("0xF360883Bf9d1ea99d149Ba4310F90Af7e7CC0f80");
+```
+
+or, we can create a contract instance use `at(address)` directly and interactive with it:
+
+```
+import { MMERC20Contract } from "erc-tokens";
+```
+
+```
+const usdc = MMERC20Contract.at("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f");
+usdc.connect(provider);
+const balance = await usdc.balanceOf("0xF360883Bf9d1ea99d149Ba4310F90Af7e7CC0f80");
+```
+
+~ Have fun!
