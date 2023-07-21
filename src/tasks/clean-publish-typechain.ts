@@ -1,6 +1,6 @@
 import fs from "fs";
 import { task } from "hardhat/config";
-import { OUTPUT_DIR } from "../config";
+import { OUTPUT_DIR } from "../constants";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 task("clean-publish-typechain", `Clean '${OUTPUT_DIR}' dir`).setAction(
@@ -12,7 +12,7 @@ task("clean-publish-typechain", `Clean '${OUTPUT_DIR}' dir`).setAction(
 );
 
 // task alias
-task("clean-pub-type", "").setAction(
+task("clean-pub-type", "alias of `clean-publish-typechain` task").setAction(
   async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
     await hre.run("clean-publish-typechain");
   },

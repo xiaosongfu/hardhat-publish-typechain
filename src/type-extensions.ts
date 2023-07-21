@@ -12,7 +12,7 @@ declare module "hardhat/types/config" {
     ethers?: string;
     typescript?: string;
     pretty?: boolean;
-    contracts: string[];
+    ignoreContracts?: string[];
 
     authToken: string;
   }
@@ -24,7 +24,7 @@ declare module "hardhat/types/config" {
     ethers?: string;
     typescript?: string;
     pretty?: boolean;
-    contracts: string[];
+    ignoreContracts: string[];
 
     authToken: string;
   }

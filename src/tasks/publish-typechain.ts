@@ -1,9 +1,27 @@
 import exec from "child_process";
 import fs from "fs";
+import Mustache from "mustache";
 import { task } from "hardhat/config";
 import { HardhatPluginError } from "hardhat/plugins";
-import { PLUGIN_NAME, OUTPUT_DIR } from "../config";
+import {
+  PLUGIN_NAME,
+  OUTPUT_DIR,
+  ABI_FILE,
+  INDEX_TS_FILE,
+  TS_CONFIG_FILE,
+  PACKAGE_JSON_FILE,
+  NPMRC_FILE,
+} from "../constants";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import {
+  ABI_TS,
+  INDEX_TS,
+  PACKAGE_JSON,
+  TS_CONFIG_JSON,
+  NPMRC_NPM,
+  NPMRC_GHP,
+} from "./templates";
+import { parseArtifacts } from "./helper";
 
 task("publish-typechain", "Publish typechain to registry").setAction(
   async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
@@ -11,12 +29,11 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     await hre.run("typechain");
     // other task has builtin: `import { TASK_COMPILE } from "hardhat/builtin-tasks/task-names";`
 
-    // read configs from `hardhat.config.ts`
+    // read configs from `hardhat.constants.ts`
     const configs = hre.config.publishTypechain;
 
-    // create `publish-typechain` dir
+    // create `publish-typechain` dir, if exists, remove it first
     if (fs.existsSync(OUTPUT_DIR)) fs.rmSync(OUTPUT_DIR, { recursive: true });
-    // fs.rmdirSync(OUTPUT_DIR, {recursive: true});
     fs.mkdirSync(OUTPUT_DIR);
 
     // copy `contracts` dir and `common.ts` file
@@ -25,42 +42,46 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     });
     fs.copyFileSync("typechain-types/common.ts", `${OUTPUT_DIR}/common.ts`);
 
-    // create `index.ts` file which exports abis
-    for (const contract of configs.contracts) {
-      const artifacts = await hre.artifacts.readArtifact(contract);
-      const abi = JSON.stringify(artifacts.abi, null, 4);
-      const code = `export const ${contract}ABI = ${abi}\n`;
-      fs.writeFileSync(`${OUTPUT_DIR}/index.ts`, code, { flag: "a+" });
+    // parse artifacts
+    const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
+
+    // create `abi.ts` file
+    // @2023/07/22 use mustache output is not correct, so use string template instead of
+    // const abiCode = Mustache.render(ABI_TS, { contracts });
+    // fs.writeFileSync(`${OUTPUT_DIR}/${ABI_FILE}`, abiCode, { flag: "a+" });
+    for (const contract of contracts) {
+      fs.writeFileSync(
+        `${OUTPUT_DIR}/${ABI_FILE}`,
+        `export const ${contract.contractName}ABI = ${contract.abi};\n`,
+        { flag: "a+" },
+      );
     }
-    // append `export * from './contracts'` to `index.ts` file end for more convenient using
-    fs.writeFileSync(
-      `${OUTPUT_DIR}/index.ts`,
-      `\nexport * from './contracts'\n`,
-      { flag: "a+" },
-    );
+
+    // create `index.ts` file
+    const indexCode = Mustache.render(INDEX_TS, { contracts });
+    fs.writeFileSync(`${OUTPUT_DIR}/${INDEX_TS_FILE}`, indexCode, {
+      flag: "a+",
+    });
 
     // create `tsconfig.json` file
-    fs.writeFileSync(
-      `${OUTPUT_DIR}/tsconfig.json`,
-      `{ "compilerOptions": { "target": "es2020", "module": "commonjs", "declaration": true, "outDir": "./dist", "esModuleInterop": true, "forceConsistentCasingInFileNames": true, "strict": true, "skipLibCheck": true }, "exclude": ["./dist"] }`,
-    );
+    fs.writeFileSync(`${OUTPUT_DIR}/${TS_CONFIG_FILE}`, TS_CONFIG_JSON);
 
     // create `package.json` file
     fs.writeFileSync(
-      `${OUTPUT_DIR}/package.json`,
-      `{ "name": "${configs.name}", "version": "${configs.version}", "main": "./dist/index.js", "types": "./dist/index.d.ts", "scripts": { "build": "tsc" }, "dependencies": { "ethers": "${configs.ethers}" }, "devDependencies": { "typescript": "${configs.typescript}" } }`,
+      `${OUTPUT_DIR}/${PACKAGE_JSON_FILE}`,
+      Mustache.render(PACKAGE_JSON, configs),
     );
 
     // create `.npmrc` file
-    if (configs.authToken.startsWith("ghp_")) {
+    if (configs.authToken.startsWith("npm_")) {
       fs.writeFileSync(
-        `${OUTPUT_DIR}/.npmrc`,
-        `//npm.pkg.github.com/:_authToken=${configs.authToken}`,
+        `${OUTPUT_DIR}/${NPMRC_FILE}`,
+        Mustache.render(NPMRC_NPM, configs),
       );
-    } else if (configs.authToken.startsWith("npm_")) {
+    } else if (configs.authToken.startsWith("ghp_")) {
       fs.writeFileSync(
-        `${OUTPUT_DIR}/.npmrc`,
-        `//registry.npmjs.org/:_authToken=${configs.authToken}`,
+        `${OUTPUT_DIR}/${NPMRC_FILE}`,
+        Mustache.render(NPMRC_GHP, configs),
       );
     } else {
       throw new HardhatPluginError(PLUGIN_NAME, "authToken is incorrect");
@@ -73,7 +94,7 @@ task("publish-typechain", "Publish typechain to registry").setAction(
 );
 
 // task alias
-task("pub-type", "Publish typechain to registry").setAction(
+task("pub-type", "alias of `publish-typechain` task").setAction(
   async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
     await hre.run("publish-typechain");
   },
