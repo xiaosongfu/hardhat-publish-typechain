@@ -6,7 +6,7 @@ import { HardhatPluginError } from "hardhat/plugins";
 import {
   PLUGIN_NAME,
   OUTPUT_DIR,
-  ABI_FILE,
+  OUTPUT_SRC_DIR,
   INDEX_TS_FILE,
   TS_CONFIG_FILE,
   PACKAGE_JSON_FILE,
@@ -36,30 +36,31 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     if (fs.existsSync(OUTPUT_DIR)) fs.rmSync(OUTPUT_DIR, { recursive: true });
     fs.mkdirSync(OUTPUT_DIR);
 
-    // copy `contracts` dir and `common.ts` file
-    fs.cpSync("typechain-types/contracts", `${OUTPUT_DIR}/contracts`, {
+    // copy `src/contracts` dir and `src/common.ts` file
+    fs.cpSync("typechain-types/contracts", `${OUTPUT_SRC_DIR}/contracts`, {
       recursive: true,
     });
-    fs.copyFileSync("typechain-types/common.ts", `${OUTPUT_DIR}/common.ts`);
+    fs.copyFileSync("typechain-types/common.ts", `${OUTPUT_SRC_DIR}/common.ts`);
 
     // parse artifacts
     const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
 
-    // create `abi.ts` file
+    // create `src/abi` dir and create `src/abi/index.ts` file
+    fs.mkdirSync(`${OUTPUT_SRC_DIR}/abi`);
     // @2023/07/22 use mustache output is not correct, so use string template instead of
     // const abiCode = Mustache.render(ABI_TS, { contracts });
     // fs.writeFileSync(`${OUTPUT_DIR}/${ABI_FILE}`, abiCode, { flag: "a+" });
     for (const contract of contracts) {
       fs.writeFileSync(
-        `${OUTPUT_DIR}/${ABI_FILE}`,
+        `${OUTPUT_SRC_DIR}/abi/${INDEX_TS_FILE}`,
         `export const ${contract.contractName}ABI = ${contract.abi};\n`,
         { flag: "a+" },
       );
     }
 
-    // create `index.ts` file
+    // create `src/index.ts` file
     const indexCode = Mustache.render(INDEX_TS, { contracts });
-    fs.writeFileSync(`${OUTPUT_DIR}/${INDEX_TS_FILE}`, indexCode, {
+    fs.writeFileSync(`${OUTPUT_SRC_DIR}/${INDEX_TS_FILE}`, indexCode, {
       flag: "a+",
     });
 
@@ -87,7 +88,7 @@ task("publish-typechain", "Publish typechain to registry").setAction(
       throw new HardhatPluginError(PLUGIN_NAME, "authToken is incorrect");
     }
 
-    // run `npm publish`
+    // execute `npm run build` and `npm publish` to build and publish package
     exec.execSync("npm run build", { cwd: OUTPUT_DIR });
     exec.execSync("npm publish", { cwd: OUTPUT_DIR });
   },

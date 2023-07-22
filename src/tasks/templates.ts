@@ -22,21 +22,25 @@ export const TS_CONFIG_JSON = `{
     "target": "es2020",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./lib",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["./dist"]
+  "exclude": ["./lib"]
 }
 `;
 
 export const PACKAGE_JSON = `{
   "name": "{{name}}",
   "version": "{{version}}",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/",
+    "src/"
+  ],
   "scripts": {
     "build": "tsc"
   },

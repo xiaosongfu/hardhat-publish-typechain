@@ -48,8 +48,11 @@ publishTypechain: {
     authToken: process.env.AUTH_TOKEN || "npm_pZB...zyP",
 }
 ```
-!! before executing `npx hardhat publish-typechain` task, you must logined to npm official registry or GitHub registry, for how to login please read official documents.
-!! **npm official registry** and **GitHub registry** has different format auth token, **npm official registry**'s auth token is start with `npm_` and **GitHub registry**'s auth token is start with `ghp_`, this plugin will publish to relevant registry according to your auth token automatic, so please make sure you use the right auth token for the right registry.
+
+* !! before executing `npx hardhat publish-typechain` task, you must logined to npm official registry or GitHub registry, for how to login please read official documents.
+* !! **npm official registry** and **GitHub registry** has different format auth token, **npm official registry**'s auth token is start with `npm_` and **GitHub registry**'s auth token is start with `ghp_`, this plugin will publish to relevant registry according to your auth token automatic, so please make sure you use the right auth token for the right registry.
+
+> don't forget to add `publish-typechain` directory to `.gitignore` file.
 
 ## Use published npm package in web project
 
@@ -66,8 +69,8 @@ $ npm i erc-tokens
 then, we can import contract's typescript type and abi, and then use them to create a contract instance and interactive with it:
 
 ```
-import { MMERC20 } from "erc-tokens/dist/contracts";
-import { MMERC20ABI } from "erc-tokens/dist/abi";
+import { MMERC20 } from "erc-tokens/lib/contracts";
+import { MMERC20ABI } from "erc-tokens/lib/abi";
 ```
 
 ```
@@ -82,8 +85,7 @@ import { MMERC20Contract } from "erc-tokens";
 ```
 
 ```
-const usdc = MMERC20Contract.at("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f");
-usdc.connect(provider);
+const usdc = MMERC20Contract.at("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f").connect(provider);
 const balance = await usdc.balanceOf("0xF360883Bf9d1ea99d149Ba4310F90Af7e7CC0f80");
 ```
 
