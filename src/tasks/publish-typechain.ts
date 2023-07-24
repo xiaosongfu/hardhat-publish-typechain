@@ -49,16 +49,10 @@ task("publish-typechain", "Publish typechain to registry").setAction(
 
     // create `src/abi` dir and create `src/abi/index.ts` file
     fs.mkdirSync(`${OUTPUT_SRC_DIR}/abi`);
-    // @2023/07/22 use mustache output is not correct, so use string template instead of
-    // const abiCode = Mustache.render(ABI_TS, { contracts });
-    // fs.writeFileSync(`${OUTPUT_DIR}/${ABI_FILE}`, abiCode, { flag: "a+" });
-    for (const contract of contracts) {
-      fs.writeFileSync(
-        `${OUTPUT_SRC_DIR}/abi/${INDEX_TS_FILE}`,
-        `export const ${contract.contractName}ABI = ${contract.abi};\n`,
-        { flag: "a+" },
-      );
-    }
+    const abiCode = Mustache.render(ABI_TS, { contracts });
+    fs.writeFileSync(`${OUTPUT_SRC_DIR}/abi/${INDEX_TS_FILE}`, abiCode, {
+      flag: "a+",
+    });
 
     // create `src/index.ts` file
     const indexCode = Mustache.render(INDEX_TS, { contracts });
