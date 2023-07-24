@@ -10,6 +10,7 @@ import {
   INDEX_TS_FILE,
   TS_CONFIG_FILE,
   PACKAGE_JSON_FILE,
+  README_MD_FILE,
   NPMRC_FILE,
 } from "../constants";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
@@ -18,6 +19,7 @@ import {
   INDEX_TS,
   PACKAGE_JSON,
   TS_CONFIG_JSON,
+  README_MD,
   NPMRC_NPM,
   NPMRC_GHP,
 } from "./templates";
@@ -71,6 +73,16 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     fs.writeFileSync(
       `${OUTPUT_DIR}/${PACKAGE_JSON_FILE}`,
       Mustache.render(PACKAGE_JSON, configs),
+    );
+
+    // create `README.md` file
+    fs.writeFileSync(
+      `${OUTPUT_DIR}/${README_MD_FILE}`,
+      Mustache.render(README_MD, {
+        configs,
+        contracts,
+        contract: contracts[0],
+      }),
     );
 
     // create `.npmrc` file

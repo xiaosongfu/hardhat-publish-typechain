@@ -35,11 +35,14 @@ export const TS_CONFIG_JSON = `{
 export const PACKAGE_JSON = `{
   "name": "{{name}}",
   "version": "{{version}}",
+  "homepage": "{{&homepage}}",
+  "repository": "{{&repository}}",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
     "lib/",
-    "src/"
+    "src/",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc"
@@ -51,6 +54,39 @@ export const PACKAGE_JSON = `{
     "typescript": "{{typescript}}"
   }
 }`;
+
+export const README_MD = `## {{configs.name}}
+
+#### Install
+
+\`\`\`
+$ npm install {{configs.name}}@{{configs.version}}
+\`\`\`
+
+#### Contracts
+
+{{#contracts}}
+* {{contractName}}
+{{/contracts}}
+
+#### Usage Example
+
+we can import contract's typescript type definition and abi, and then use them to create a contract instance and interactive with on-chain contracts using the instance:
+
+\`\`\`
+import { {{contract.contractName}} } from "{{configs.name}}/lib{{#contract.importPath}}/{{.}}{{/contract.importPath}}";
+import { {{contract.contractName}}ABI } from "{{configs.name}}/lib/abi";
+
+const contract: {{contract.contractName}} = await new ethers.Contract("0xAb...yZ", {{contract.contractName}}ABI, provider) as unknown as {{contract.contractName}};
+\`\`\`
+
+or, we can create a contract instance use \`at(address)\` directly and interactive with on-chain contracts using the instance:
+
+\`\`\`
+import { {{contract.contractName}}Contract } from "{{configs.name}}";
+
+const contract: {{contract.contractName}} = {{contract.contractName}}Contract.at("0xAb...yZ").connect(provider);
+\`\`\``;
 
 export const NPMRC_NPM = `//registry.npmjs.org/:_authToken={{authToken}}`;
 export const NPMRC_GHP = `//npm.pkg.github.com/:_authToken={{authToken}}`;

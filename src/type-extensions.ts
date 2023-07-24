@@ -8,6 +8,8 @@ declare module "hardhat/types/config" {
   export interface PublishTypechainUserConfig {
     name: string;
     version: string;
+    homepage?: string;
+    repository?: string;
 
     ethers?: string;
     typescript?: string;
@@ -20,6 +22,8 @@ declare module "hardhat/types/config" {
   export interface PublishTypechainConfig {
     name: string;
     version: string;
+    homepage?: string;
+    repository?: string;
 
     ethers?: string;
     typescript?: string;

@@ -1,6 +1,6 @@
 {
   "name": "hardhat-publish-typechain",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "description": "Hardhat TypeScript plugin for publishing typechain to registry",
   "repository": "github:xiaosongfu/hardhat-publish-typechain",
   "author": "xiaosongfu",

@@ -16,6 +16,8 @@ extendConfig(
     // read user config
     const name = userConfig.publishTypechain?.name || "";
     const version = userConfig.publishTypechain?.version || "";
+    const homepage = userConfig.publishTypechain?.homepage || "";
+    const repository = userConfig.publishTypechain?.repository || "";
 
     const ethers = userConfig.publishTypechain?.ethers || DEFAULT_ETHERS;
     const typescript =
@@ -33,6 +35,8 @@ extendConfig(
     config.publishTypechain = {
       name,
       version,
+      homepage,
+      repository,
       ethers,
       typescript,
       pretty,

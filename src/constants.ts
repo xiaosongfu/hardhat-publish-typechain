@@ -5,9 +5,12 @@ export const OUTPUT_DIR = "publish-typechain";
 export const OUTPUT_SRC_DIR = `${OUTPUT_DIR}/src`;
 
 export const INDEX_TS_FILE = "index.ts";
+
 export const TS_CONFIG_FILE = "tsconfig.json";
 
 export const PACKAGE_JSON_FILE = "package.json";
+
+export const README_MD_FILE = "README.md";
 
 export const NPMRC_FILE = ".npmrc";
 
