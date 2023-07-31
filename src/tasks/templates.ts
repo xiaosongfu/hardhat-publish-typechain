@@ -82,12 +82,13 @@ we can import contract's typescript type definition and abi, and then use them t
 import { {{contract.contractName}} } from "{{configs.name}}/lib{{#contract.importPath}}/{{.}}{{/contract.importPath}}";
 import { {{contract.contractName}}ABI } from "{{configs.name}}/lib/abi";
 
-const contract: {{contract.contractName}} = await new ethers.Contract("0xAb...yZ", {{contract.contractName}}ABI, provider) as unknown as {{contract.contractName}};
+const contract: {{contract.contractName}} = new ethers.Contract("0xAb...yZ", {{contract.contractName}}ABI, provider) as unknown as {{contract.contractName}};
 \`\`\`
 
 or, we can create a contract instance use \`at(address)\` directly and interactive with on-chain contracts using the instance:
 
 \`\`\`
+import { {{contract.contractName}} } from "{{configs.name}}/lib{{#contract.importPath}}/{{.}}{{/contract.importPath}}";
 import { {{contract.contractName}}Contract } from "{{configs.name}}";
 
 const contract: {{contract.contractName}} = {{contract.contractName}}Contract.at("0xAb...yZ").connect(provider);
