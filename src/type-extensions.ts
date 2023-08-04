@@ -15,6 +15,8 @@ declare module "hardhat/types/config" {
     typescript?: string;
     pretty?: boolean;
     ignoreContracts?: string[];
+    includeDeployed?: boolean;
+    deployedDir?: string;
 
     authToken: string;
   }
@@ -29,6 +31,8 @@ declare module "hardhat/types/config" {
     typescript?: string;
     pretty?: boolean;
     ignoreContracts: string[];
+    includeDeployed: boolean;
+    deployedDir: string;
 
     authToken: string;
   }

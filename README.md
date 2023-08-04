@@ -4,7 +4,7 @@ Publish generated typechain-types to NPM.
 
 `npx hardhat typechain` task will generate `typechain-types` directory, which contains full-featured typescript code for interactive with our contracts, so we can use those code in our web project to let interacting with contracts more efficiency with power of typescript, like code hint, read function definition.
 
-## Install
+#### 1. Install
 
 ```
 npm install --save-dev hardhat-publish-typechain
@@ -12,12 +12,12 @@ npm install --save-dev hardhat-publish-typechain
 yarn add --dev hardhat-publish-typechain
 ```
 
-## Included Commands
+#### 2. Included Commands
 
-- `npx hardhat publish-typechain`: Publish typechain to NPM.
-- `npx hardhat clean-publish-typechain`: Delete `publish-typechain` directory.
+- `npx hardhat pub-type` is alias of `npx hardhat publish-typechain`: Publish typechain to NPM.
+- `npx hardhat clean-pub-type` is alias of `npx hardhat clean-publish-typechain`: Delete `publish-typechain` directory.
 
-## Usage
+#### 3. Usage
 
 Load plugin in Hardhat config:
 
@@ -29,16 +29,18 @@ import 'hardhat-publish-typechain';
 
 Add configuration under `publishTypechain` key:
 
-| option            | description                                                                    | optional | default  |
-|-------------------|--------------------------------------------------------------------------------|----------|----------|
-| `name`            | npm package's name                                                             | false    |          |
-| `version`         | npm package's version                                                          | false    |          |
-| `homepage`        | npm package's homepage                                                         | true     | `""`     |
-| `repository`      | npm package's repository                                                       | true     | `""`     |
-| `ethers`          | version of `ethers` library                                                    | true     | `^5.7.2` |
-| `typescript`      | version of `typescript` library                                                | true     | `^4.9.5` |
-| `ignoreContracts` | which contracts wants to ignore                                                | true     | `[]`     |
-| `authToken`       | auth token for publish npm package to npm official registry or GitHub registry | false    |          |
+| option            | description                                                                                     | type            | optional | default            |
+|-------------------|-------------------------------------------------------------------------------------------------|-----------------|----------|--------------------|
+| `name`            | npm package's name                                                                              | `string`        | false    |                    |
+| `version`         | npm package's version                                                                           | `string`        | false    |                    |
+| `homepage`        | npm package's homepage                                                                          | `string`        | true     | `""`               |
+| `repository`      | npm package's repository                                                                        | `string`        | true     | `""`               |
+| `ethers`          | version of `ethers` library                                                                     | `string`        | true     | `^5.7.2`           |
+| `typescript`      | version of `typescript` library                                                                 | `string`        | true     | `^4.9.5`           |
+| `ignoreContracts` | which contracts wants to ignore                                                                 | array of string | true     | `[]`               |
+| `includeDeployed` | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | boolean         | true     | false              |
+| `deployedDir`     | `hardhat-deployed-records` plugin's `deployedDir` config value                                  | `string`        | true     | `scripts/deployed` |
+| `authToken`       | auth token for publish npm package to npm official registry or GitHub registry                  | `string`        | false    |                    |
 
 example:
 
@@ -57,7 +59,7 @@ publishTypechain: {
 
 > don't forget to add `publish-typechain` directory to `.gitignore` file.
 
-## Use published npm package in web project
+#### 4. Use published npm package in web project
 
 When npm package published, we can install it, import it and use it in our web project.
 
@@ -69,23 +71,34 @@ first, install it:
 $ npm i erc-tokens
 ```
 
-then, we can import contract's typescript type definition and abi, and then use them to create a contract instance and interactive with on-chain contracts using the instance:
+then, you can import **abi** from `erc-tokens` package and provide your **contract address** to create a contract instance:
 
 ```
 import { MMERC20 } from "erc-tokens/lib/contracts";
 import { MMERC20ABI } from "erc-tokens/lib/abi";
 
-const usdc: MMERC20 = await new ethers.Contract("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f", MMERC20ABI, provider) as unknown as MMERC20;
-const balance = await usdc.balanceOf("0xF360883Bf9d1ea99d149Ba4310F90Af7e7CC0f80");
+const usdc: MMERC20 = await new ethers.Contract("0xAb...yZ", MMERC20ABI, provider) as unknown as MMERC20;
+const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3");
 ```
 
-or, we can create a contract instance use `at(address)` directly and interactive with on-chain contracts using the instance:
+or, you can only provide your **contract address** to create a contract instance with `at(address)` function:
 
 ```
+import { MMERC20 } from "erc-tokens/lib/contracts";
 import { MMERC20Contract } from "erc-tokens";
 
-const usdc: MMERC20 = MMERC20Contract.at("0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f").connect(provider);
-const balance = await usdc.balanceOf("0xF360883Bf9d1ea99d149Ba4310F90Af7e7CC0f80");
+const usdc: MMERC20 = MMERC20Contract.at("0xAb...yZ").connect(provider);
+const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3");
+```
+
+if you are using `hardhat-deployed-records` plugin and config `includeDeployed: true`, you can create a contract instance use `At[network]()` with builtin **contract address** from this package:
+
+```
+import { MMERC20 } from "erc-tokens/lib/contracts";
+import { MMERC20Contract } from "erc-tokens";
+
+const usdc: MMERC20 = MMERC20Contract.AtSepolia().connect(provider);
+const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3");
 ```
 
 ~ Have fun!

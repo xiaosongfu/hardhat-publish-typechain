@@ -4,6 +4,8 @@ export const OUTPUT_DIR = "publish-typechain";
 
 export const OUTPUT_SRC_DIR = `${OUTPUT_DIR}/src`;
 
+export const DEFAULT_DEPLOYED_DIR = "scripts/deployed";
+
 export const INDEX_TS_FILE = "index.ts";
 
 export const TS_CONFIG_FILE = "tsconfig.json";

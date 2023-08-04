@@ -15,15 +15,16 @@ import {
 } from "../constants";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
-  ABI_TS,
+  ABI_INDEX_TS,
   INDEX_TS,
+  DEPLOYED_INDEX_TS,
   PACKAGE_JSON,
   TS_CONFIG_JSON,
   README_MD,
   NPMRC_NPM,
   NPMRC_GHP,
 } from "./templates";
-import { parseArtifacts } from "./helper";
+import { parseArtifacts, parseDeployedAddresses } from "./helper";
 
 task("publish-typechain", "Publish typechain to registry").setAction(
   async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
@@ -45,17 +46,51 @@ task("publish-typechain", "Publish typechain to registry").setAction(
     fs.copyFileSync("typechain-types/common.ts", `${OUTPUT_SRC_DIR}/common.ts`);
 
     // parse artifacts
+    // contracts: [{contractName: "MockERC20", importPath: "contracts/mock", abi: ...}, ...]
     const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
 
-    // create `src/abi` dir and create `src/abi/index.ts` file
+    // create `src/abi` dir
     fs.mkdirSync(`${OUTPUT_SRC_DIR}/abi`);
-    const abiCode = Mustache.render(ABI_TS, { contracts });
+    const abiCode = Mustache.render(ABI_INDEX_TS, { contracts });
+    //  write `src/abi/index.ts` file
     fs.writeFileSync(`${OUTPUT_SRC_DIR}/abi/${INDEX_TS_FILE}`, abiCode, {
       flag: "a+",
     });
 
+    // if `includeDeployed` is `true`, parse and handle deployed addresses
+    let contractsWithDeployedAddress: {
+      contractName: string;
+      importPath: string;
+      addresses: { network: string; address: string }[];
+    }[] = [];
+    if (configs.includeDeployed) {
+      // create `src/deployed` dir
+      fs.mkdirSync(`${OUTPUT_SRC_DIR}/deployed`);
+      // wrap `contracts` with deployed addresses
+      contractsWithDeployedAddress = parseDeployedAddresses(
+        configs.deployedDir,
+        contracts,
+      );
+      //  write `src/deployed/index.ts` file
+      const deployedCode = Mustache.render(DEPLOYED_INDEX_TS, {
+        contractsWithDeployedAddress,
+      });
+      fs.writeFileSync(
+        `${OUTPUT_SRC_DIR}/deployed/${INDEX_TS_FILE}`,
+        deployedCode,
+        {
+          flag: "a+",
+        },
+      );
+    }
+
     // create `src/index.ts` file
-    const indexCode = Mustache.render(INDEX_TS, { contracts });
+    const indexCode = Mustache.render(INDEX_TS, {
+      contracts: configs.includeDeployed
+        ? contractsWithDeployedAddress
+        : contracts,
+      configs,
+    });
     fs.writeFileSync(`${OUTPUT_SRC_DIR}/${INDEX_TS_FILE}`, indexCode, {
       flag: "a+",
     });
@@ -75,7 +110,14 @@ task("publish-typechain", "Publish typechain to registry").setAction(
       Mustache.render(README_MD, {
         configs,
         contracts,
-        contract: contracts[0],
+        contractsWithDeployedAddress,
+        // a `contract` and a `network` to render example code
+        contract: configs.includeDeployed
+          ? contractsWithDeployedAddress[0]
+          : {},
+        network: configs.includeDeployed
+          ? contractsWithDeployedAddress[0].addresses[0].network
+          : "",
       }),
     );
 
