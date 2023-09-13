@@ -26,13 +26,16 @@ export async function parseArtifacts(
     if (!fullName.startsWith("contracts/")) continue;
 
     // get sourceName and contractName
-    const { sourceName, contractName, abi } = await hre.artifacts.readArtifact(
+    const { sourceName, contractName, bytecode, abi } = await hre.artifacts.readArtifact(
       fullName,
     );
     // console.log("~~~~", sourceName, contractName);
     // examples:
     // ~~~~ contracts/SeeDAO.sol SeeDAO
     // ~~~~ contracts/mock/MockERC20.sol MockERC20
+
+    // skip solidity interface
+    if (bytecode === "0x") continue;
 
     // skip ignored contracts
     if (ignoreContracts.includes(contractName)) continue;
