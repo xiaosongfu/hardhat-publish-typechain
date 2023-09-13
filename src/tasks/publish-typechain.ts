@@ -5,6 +5,7 @@ import { task } from "hardhat/config";
 import { HardhatPluginError } from "hardhat/plugins";
 import {
   PLUGIN_NAME,
+  TASK_PUBLISH_TYPECHAIN,
   OUTPUT_DIR,
   OUTPUT_SRC_DIR,
   INDEX_TS_FILE,
@@ -26,7 +27,7 @@ import {
 } from "./templates";
 import { parseArtifacts, parseDeployedAddresses } from "./helper";
 
-task("publish-typechain", "Publish typechain to registry").setAction(
+task(TASK_PUBLISH_TYPECHAIN, "Publish typechain to registry").setAction(
   async (taskArgs: any, hre: HardhatRuntimeEnvironment) => {
     // run `typechain` task before all operations
     await hre.run("typechain");

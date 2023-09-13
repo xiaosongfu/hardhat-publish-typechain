@@ -1,12 +1,7 @@
 import { extendConfig } from "hardhat/config";
 import { HardhatPluginError } from "hardhat/plugins";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
-import {
-  PLUGIN_NAME,
-  DEFAULT_DEPLOYED_DIR,
-  DEFAULT_ETHERS,
-  DEFAULT_TYPESCRIPT,
-} from "./constants";
+import { PLUGIN_NAME, DEFAULT_DEPLOYED_DIR } from "./constants";
 
 // This import is needed to let the TypeScript compiler know that it should include your type
 // extensions in your npm package's types file.
@@ -24,10 +19,6 @@ extendConfig(
     const homepage = userConfig.publishTypechain?.homepage || "";
     const repository = userConfig.publishTypechain?.repository || "";
 
-    const ethers = userConfig.publishTypechain?.ethers || DEFAULT_ETHERS;
-    const typescript =
-      userConfig.publishTypechain?.typescript || DEFAULT_TYPESCRIPT;
-    const pretty = userConfig.publishTypechain?.pretty || false;
     const ignoreContracts = userConfig.publishTypechain?.ignoreContracts ?? [];
     const includeDeployed =
       userConfig.publishTypechain?.includeDeployed ?? false;
@@ -46,9 +37,6 @@ extendConfig(
       version,
       homepage,
       repository,
-      ethers,
-      typescript,
-      pretty,
       ignoreContracts,
       includeDeployed,
       deployedDir,

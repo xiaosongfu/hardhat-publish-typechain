@@ -10,9 +10,6 @@ declare module "hardhat/types/config" {
     homepage?: string;
     repository?: string;
 
-    ethers?: string;
-    typescript?: string;
-    pretty?: boolean;
     ignoreContracts?: string[];
     includeDeployed?: boolean;
     deployedDir?: string;
@@ -26,9 +23,6 @@ declare module "hardhat/types/config" {
     homepage?: string;
     repository?: string;
 
-    ethers?: string;
-    typescript?: string;
-    pretty?: boolean;
     ignoreContracts: string[];
     includeDeployed: boolean;
     deployedDir: string;

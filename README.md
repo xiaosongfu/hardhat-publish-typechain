@@ -1,4 +1,4 @@
-## hardhat Publish Typechain
+## Hardhat Publish Typechain
 
 Publish generated typechain-types to NPM.
 
@@ -7,9 +7,9 @@ Publish generated typechain-types to NPM.
 #### 1. Install
 
 ```
-npm install --save-dev hardhat-publish-typechain
+$ npm install --save-dev hardhat-publish-typechain
 # or
-yarn add --dev hardhat-publish-typechain
+$ yarn add --dev hardhat-publish-typechain
 ```
 
 #### 2. Included Commands
@@ -35,10 +35,8 @@ Add configuration under `publishTypechain` key:
 | `version`         | npm package's version                                                                           | `string`        | false    |                    |
 | `homepage`        | npm package's homepage                                                                          | `string`        | true     | `""`               |
 | `repository`      | npm package's repository                                                                        | `string`        | true     | `""`               |
-| `ethers`          | version of `ethers` library                                                                     | `string`        | true     | `^5.7.2`           |
-| `typescript`      | version of `typescript` library                                                                 | `string`        | true     | `^4.9.5`           |
 | `ignoreContracts` | which contracts wants to ignore                                                                 | array of string | true     | `[]`               |
-| `includeDeployed` | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | boolean         | true     | false              |
+| `includeDeployed` | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | `boolean`       | true     | false              |
 | `deployedDir`     | `hardhat-deployed-records` plugin's `deployedDir` config value                                  | `string`        | true     | `scripts/deployed` |
 | `authToken`       | auth token for publish npm package to npm official registry or GitHub registry                  | `string`        | false    |                    |
 
