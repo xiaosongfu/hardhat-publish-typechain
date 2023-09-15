@@ -37,6 +37,9 @@ export async function parseArtifacts(
     // skip solidity interface
     if (bytecode === "0x") continue;
 
+    // skip solidity library contract
+    if (abi.length === 0) continue;
+
     // skip ignored contracts
     if (ignoreContracts.includes(contractName)) continue;
 
