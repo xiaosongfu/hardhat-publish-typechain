@@ -100,3 +100,8 @@ const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3
 ```
 
 ~ Have fun!
+
+#### 5. Version History
+
+- v0.4.0 (2023/09/15)
+    - auto skip `interface` type contract
