@@ -70,6 +70,7 @@ task(TASK_PUBLISH_TYPECHAIN, "Publish typechain to registry").setAction(
       // wrap `contracts` with deployed addresses
       contractsWithDeployedAddress = parseDeployedAddresses(
         configs.deployedDir,
+        configs.ignoreNetworks,
         contracts,
       );
       //  write `src/deployed/index.ts` file

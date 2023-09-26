@@ -20,10 +20,12 @@ extendConfig(
     const repository = userConfig.publishTypechain?.repository || "";
 
     const ignoreContracts = userConfig.publishTypechain?.ignoreContracts ?? [];
+
     const includeDeployed =
       userConfig.publishTypechain?.includeDeployed ?? false;
     const deployedDir =
       userConfig.publishTypechain?.deployedDir ?? DEFAULT_DEPLOYED_DIR;
+    const ignoreNetworks = userConfig.publishTypechain?.ignoreNetworks ?? [];
 
     const authToken = userConfig.publishTypechain?.authToken || "";
 
@@ -40,6 +42,7 @@ extendConfig(
       ignoreContracts,
       includeDeployed,
       deployedDir,
+      ignoreNetworks,
       authToken,
     };
   },

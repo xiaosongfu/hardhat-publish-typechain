@@ -64,6 +64,7 @@ export async function parseArtifacts(
 
 export function parseDeployedAddresses(
   deployedDir: string,
+  ignoreNetworks: string[],
   contracts: { contractName: string; importPath: string }[],
 ): {
   contractName: string;
@@ -87,6 +88,9 @@ export function parseDeployedAddresses(
   //     └── contracts.json
   let deployedJson: { network: string; json: any }[] = [];
   fs.readdirSync(deployedDir, { recursive: false }).forEach((network) => {
+    // skip ignored networks
+    if (ignoreNetworks.includes(network.toString())) return;
+
     const manifest = `${deployedDir}/${network}/contracts.json`;
     // NOTICE: `fs.existsSync('scripts/deployed/index.ts/contracts.json')` will be `false`
     if (fs.existsSync(manifest)) {

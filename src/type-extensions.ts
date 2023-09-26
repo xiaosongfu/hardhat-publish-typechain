@@ -11,8 +11,10 @@ declare module "hardhat/types/config" {
     repository?: string;
 
     ignoreContracts?: string[];
+
     includeDeployed?: boolean;
     deployedDir?: string;
+    ignoreNetworks?: string[];
 
     authToken: string;
   }
@@ -24,8 +26,10 @@ declare module "hardhat/types/config" {
     repository?: string;
 
     ignoreContracts: string[];
+
     includeDeployed: boolean;
     deployedDir: string;
+    ignoreNetworks: string[];
 
     authToken: string;
   }
