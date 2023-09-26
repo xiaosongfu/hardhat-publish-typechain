@@ -103,6 +103,9 @@ const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3
 
 #### 5. Version History
 
+- v0.5.0 (2023/09/26)
+  - rename deployed contract address constant's name 
+
 - v0.4.2 (2023/09/26)
   - support skip networks with `skipNetworks` option when using including deployed contracts
 
