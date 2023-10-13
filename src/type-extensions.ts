@@ -10,6 +10,8 @@ declare module "hardhat/types/config" {
     homepage?: string;
     repository?: string;
 
+    iifeGlobalObjectName: string;
+
     ignoreContracts?: string[];
 
     includeDeployed?: boolean;
@@ -24,6 +26,8 @@ declare module "hardhat/types/config" {
     version: string;
     homepage?: string;
     repository?: string;
+
+    iifeGlobalObjectName: string;
 
     ignoreContracts: string[];
 

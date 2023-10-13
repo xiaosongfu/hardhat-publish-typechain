@@ -139,7 +139,8 @@ task(TASK_PUBLISH_TYPECHAIN, "Publish typechain to registry").setAction(
     }
 
     // execute `npm run build` and `npm publish` to build and publish package
-    exec.execSync("npm run build", { cwd: OUTPUT_DIR });
+    exec.execSync("npm install", { cwd: OUTPUT_DIR });
+    exec.execSync("npm run package", { cwd: OUTPUT_DIR });
     exec.execSync("npm publish", { cwd: OUTPUT_DIR });
   },
 );

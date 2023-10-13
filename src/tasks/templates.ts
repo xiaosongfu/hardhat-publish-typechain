@@ -47,38 +47,56 @@ export namespace {{contractName}}Contract {
 
 export const TS_CONFIG_JSON: string = `{
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
+    "target": "es5",
+    "module": "esnext",
     "declaration": true,
-    "outDir": "./lib",
+    "outDir": "./lib/esm",
+    "rootDir": "./src",
+    "strict": true,
+    "lib": ["ES6", "DOM"],
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "sourceMap": false
   },
-  "exclude": ["./lib"]
+  "exclude": ["node_modules", "lib", "dist"]
 }
 `;
 
 export const PACKAGE_JSON: string = `{
-  "name": "{{name}}",
-  "version": "{{version}}",
+  "name": "{{&name}}",
+  "version": "{{&version}}",
   "homepage": "{{&homepage}}",
   "repository": "{{&repository}}",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
   "files": [
-    "lib/",
-    "src/",
-    "README.md"
+    "lib",
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsc"
+    "package": "npm run build && npm run dist",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "dist": "npm run dist:esm && npm run dist:iife",
+    "dist:esm": "esbuild src/index.ts --bundle --minify --target=esnext --format=esm --platform=browser --outfile=dist/esm/index.min.js",
+    "dist:iife": "esbuild src/index.ts --bundle --minify --target=esnext --format=iife --platform=browser --global-name={{iifeGlobalObjectName}}js --footer:js=\\"var {{iifeGlobalObjectName}} = {{iifeGlobalObjectName}}js.default;\\" --outfile=dist/iife/index.min.js"
   },
   "dependencies": {
     "ethers": "^6.7.1"
   },
   "devDependencies": {
+    "esbuild": "^0.19.4",
     "typescript": "^5.2.2"
   }
 }`;

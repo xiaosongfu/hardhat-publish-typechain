@@ -19,6 +19,8 @@ extendConfig(
     const homepage = userConfig.publishTypechain?.homepage || "";
     const repository = userConfig.publishTypechain?.repository || "";
 
+    const iifeGlobalObjectName =
+      userConfig.publishTypechain?.iifeGlobalObjectName;
     const ignoreContracts = userConfig.publishTypechain?.ignoreContracts ?? [];
 
     const includeDeployed =
@@ -30,8 +32,14 @@ extendConfig(
 
     const authToken = userConfig.publishTypechain?.authToken || "";
 
+    if (iifeGlobalObjectName === undefined) {
+      throw new HardhatPluginError(
+        PLUGIN_NAME,
+        "'iifeGlobalObjectName' is required",
+      );
+    }
     if (authToken === "") {
-      throw new HardhatPluginError(PLUGIN_NAME, "authToken is required");
+      throw new HardhatPluginError(PLUGIN_NAME, "'authToken' is required");
     }
 
     // inject config fields
@@ -40,6 +48,7 @@ extendConfig(
       version,
       homepage,
       repository,
+      iifeGlobalObjectName,
       ignoreContracts,
       includeDeployed,
       deployedDir,
