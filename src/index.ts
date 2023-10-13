@@ -25,7 +25,8 @@ extendConfig(
       userConfig.publishTypechain?.includeDeployed ?? false;
     const deployedDir =
       userConfig.publishTypechain?.deployedDir ?? DEFAULT_DEPLOYED_DIR;
-    const ignoreNetworks = userConfig.publishTypechain?.ignoreNetworks ?? [];
+    const ignoreDeployedNetworks =
+      userConfig.publishTypechain?.ignoreDeployedNetworks ?? [];
 
     const authToken = userConfig.publishTypechain?.authToken || "";
 
@@ -42,7 +43,7 @@ extendConfig(
       ignoreContracts,
       includeDeployed,
       deployedDir,
-      ignoreNetworks,
+      ignoreDeployedNetworks,
       authToken,
     };
   },

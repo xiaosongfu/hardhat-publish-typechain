@@ -14,7 +14,7 @@ declare module "hardhat/types/config" {
 
     includeDeployed?: boolean;
     deployedDir?: string;
-    ignoreNetworks?: string[];
+    ignoreDeployedNetworks?: string[];
 
     authToken: string;
   }
@@ -29,7 +29,7 @@ declare module "hardhat/types/config" {
 
     includeDeployed: boolean;
     deployedDir: string;
-    ignoreNetworks: string[];
+    ignoreDeployedNetworks: string[];
 
     authToken: string;
   }
