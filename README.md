@@ -103,6 +103,9 @@ const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3
 
 #### 5. Version History
 
+- v0.7.0 (2023/10/13)
+  - add `esbuild` to build browser esm+iife signal-script file
+
 - v0.6.0 (2023/10/13)
   - rename config option `ignoreNetworks` to `ignoreDeployedNetworks`
 
