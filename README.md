@@ -29,16 +29,18 @@ import 'hardhat-publish-typechain';
 
 Add configuration under `publishTypechain` key:
 
-| option            | description                                                                                     | type            | optional | default            |
-|-------------------|-------------------------------------------------------------------------------------------------|-----------------|----------|--------------------|
-| `name`            | npm package's name                                                                              | `string`        | false    |                    |
-| `version`         | npm package's version                                                                           | `string`        | false    |                    |
-| `homepage`        | npm package's homepage                                                                          | `string`        | true     | `""`               |
-| `repository`      | npm package's repository                                                                        | `string`        | true     | `""`               |
-| `ignoreContracts` | which contracts wants to ignore                                                                 | array of string | true     | `[]`               |
-| `includeDeployed` | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | `boolean`       | true     | false              |
-| `deployedDir`     | `hardhat-deployed-records` plugin's `deployedDir` config value                                  | `string`        | true     | `scripts/deployed` |
-| `authToken`       | auth token for publish npm package to npm official registry or GitHub registry                  | `string`        | false    |                    |
+| option                   | description                                                                                     | type            | optional | default            |
+|--------------------------|-------------------------------------------------------------------------------------------------|-----------------|----------|--------------------|
+| `name`                   | npm package's name                                                                              | `string`        | false    |                    |
+| `version`                | npm package's version                                                                           | `string`        | false    |                    |
+| `homepage`               | npm package's homepage                                                                          | `string`        | true     | `""`               |
+| `repository`             | npm package's repository                                                                        | `string`        | true     | `""`               |
+| `iifeGlobalObjectName`   | iife format javascript script file's global name                                                | string          | false    |                    |
+| `ignoreContracts`        | which contracts wants to ignore                                                                 | array of string | true     | `[]`               |
+| `includeDeployed`        | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | `boolean`       | true     | false              |
+| `deployedDir`            | `hardhat-deployed-records` plugin's `deployedDir` config value                                  | `string`        | true     | `scripts/deployed` |
+| `ignoreDeployedNetworks` | deployed network's address want to ignore                                                       | array of string | true     | []                 |
+| `authToken`              | auth token for publish npm package to npm official registry or GitHub registry                  | `string`        | false    |                    |
 
 example:
 
@@ -47,13 +49,16 @@ publishTypechain: {
     name: "erc-tokens",
     version: "0.2.0",
     repository: "https://github.com/xiaosongfu/erc-tokens",
+    iifeGlobalObjectName: "mock",
     ignoreContracts: ["MockERC20"],
+    includeDeployed: true,
+    ignoreDeployedNetworks: ["localhost"],
     authToken: process.env.AUTH_TOKEN || "npm_pZB...zyP",
 }
 ```
 
-* !! before executing `npx hardhat publish-typechain` task, you must logined to npm official registry or GitHub registry, for how to login please read official documents.
-* !! **npm official registry** and **GitHub registry** has different format auth token, **npm official registry**'s auth token is start with `npm_` and **GitHub registry**'s auth token is start with `ghp_`, this plugin will publish to relevant registry according to your auth token automatic, so please make sure you use the right auth token for the right registry.
+- !! before executing `npx hardhat publish-typechain` task, you must logined to npm official registry or GitHub registry, for how to login please read official documents.
+- !! **npm official registry** and **GitHub registry** has different format auth token, **npm official registry**'s auth token is start with `npm_` and **GitHub registry**'s auth token is start with `ghp_`, this plugin will publish to relevant registry according to your auth token automatic, so please make sure you use the right auth token for the right registry.
 
 > don't forget to add `publish-typechain` directory to `.gitignore` file.
 
@@ -104,19 +109,24 @@ const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3
 #### 5. Version History
 
 - v0.7.0 (2023/10/13)
+
   - add `esbuild` to build browser esm+iife signal-script file
 
 - v0.6.0 (2023/10/13)
+
   - rename config option `ignoreNetworks` to `ignoreDeployedNetworks`
 
 - v0.5.0 (2023/09/26)
-  - rename deployed contract address constant's name 
+
+  - rename deployed contract address constant's name
 
 - v0.4.2 (2023/09/26)
+
   - support skip networks with `skipNetworks` option when using including deployed contracts
 
 - v0.4.1 (2023/09/15)
+
   - auto skip solidity `library` contract
 
 - v0.4.0 (2023/09/15)
-    - auto skip `interface` type contract
+  - auto skip `interface` type contract
