@@ -24,6 +24,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
     "mustache": "^4.2.0"
   },
   "devDependencies": {

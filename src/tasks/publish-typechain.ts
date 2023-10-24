@@ -48,7 +48,11 @@ task(TASK_PUBLISH_TYPECHAIN, "Publish typechain to registry").setAction(
 
     // parse artifacts
     // contracts: [{contractName: "MockERC20", importPath: "contracts/mock", abi: ...}, ...]
-    const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
+    const { contracts } = await parseArtifacts(
+      hre,
+      configs.prettyABI,
+      configs.ignoreContracts,
+    );
 
     // create `src/abi` dir
     fs.mkdirSync(`${OUTPUT_SRC_DIR}/abi`);

@@ -12,6 +12,7 @@ declare module "hardhat/types/config" {
 
     iifeGlobalObjectName: string;
 
+    prettyABI?: boolean;
     ignoreContracts?: string[];
 
     includeDeployed?: boolean;
@@ -29,6 +30,7 @@ declare module "hardhat/types/config" {
 
     iifeGlobalObjectName: string;
 
+    prettyABI: boolean;
     ignoreContracts: string[];
 
     includeDeployed: boolean;

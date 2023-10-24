@@ -1,11 +1,13 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import fs from "fs";
+import { FormatTypes, Interface } from "@ethersproject/abi";
 
 export async function parseArtifacts(
   hre: HardhatRuntimeEnvironment,
+  prettyABI: boolean,
   ignoreContracts: string[],
 ): Promise<{
-  contracts: { contractName: string; importPath: string; abi: any }[];
+  contracts: { contractName: string; importPath: string; abi: string[] }[];
 }> {
   const fullNames = await hre.artifacts.getAllFullyQualifiedNames();
   // console.log("~~~~", fullNames);
@@ -18,7 +20,7 @@ export async function parseArtifacts(
   //   'contracts/mock/MockERC20.sol:MockERC20'
   // ]
 
-  let contracts: { contractName: string; importPath: string; abi: string }[] =
+  let contracts: { contractName: string; importPath: string; abi: string[] }[] =
     [];
   // [{contractName: "MockERC20", importPath: "contracts/mock", abi: ...}, ...]
   for (const fullName of fullNames) {
@@ -26,9 +28,8 @@ export async function parseArtifacts(
     if (!fullName.startsWith("contracts/")) continue;
 
     // get sourceName and contractName
-    const { sourceName, contractName, bytecode, abi } = await hre.artifacts.readArtifact(
-      fullName,
-    );
+    const { sourceName, contractName, bytecode, abi } =
+      await hre.artifacts.readArtifact(fullName);
     // console.log("~~~~", sourceName, contractName);
     // examples:
     // ~~~~ contracts/SeeDAO.sol SeeDAO
@@ -48,10 +49,15 @@ export async function parseArtifacts(
     // `contracts/mock/MockERC20.sol` -> `"contracts/mock"`
     const importPath = sourceName.slice(0, sourceName.lastIndexOf("/"));
 
+    // format ABI
+    const formatABI = prettyABI
+      ? (new Interface(abi).format(FormatTypes.full) as string[])
+      : (new Interface(abi).format(FormatTypes.json) as string[]);
+
     contracts.push({
       contractName,
       importPath,
-      abi: JSON.stringify(abi, null, 2),
+      abi: formatABI,
     });
   }
 

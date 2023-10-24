@@ -21,6 +21,8 @@ extendConfig(
 
     const iifeGlobalObjectName =
       userConfig.publishTypechain?.iifeGlobalObjectName;
+
+    const prettyABI = userConfig.publishTypechain?.prettyABI ?? false;
     const ignoreContracts = userConfig.publishTypechain?.ignoreContracts ?? [];
 
     const includeDeployed =
@@ -49,6 +51,7 @@ extendConfig(
       homepage,
       repository,
       iifeGlobalObjectName,
+      prettyABI,
       ignoreContracts,
       includeDeployed,
       deployedDir,
