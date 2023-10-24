@@ -36,6 +36,7 @@ Add configuration under `publishTypechain` key:
 | `homepage`               | npm package's homepage                                                                          | `string`        | true     | `""`               |
 | `repository`             | npm package's repository                                                                        | `string`        | true     | `""`               |
 | `iifeGlobalObjectName`   | iife format javascript script file's global name                                                | string          | false    |                    |
+| `prettyABI`              | use `Solidity JSON ABI` or `Human-Readable ABI`, `true` means use `Human-Readable ABI`          | `bool`          | true     | `false`            |
 | `ignoreContracts`        | which contracts wants to ignore                                                                 | array of string | true     | `[]`               |
 | `includeDeployed`        | if need to include the `deployed` directory maintained by the `hardhat-deployed-records` plugin | `boolean`       | true     | false              |
 | `deployedDir`            | `hardhat-deployed-records` plugin's `deployedDir` config value                                  | `string`        | true     | `scripts/deployed` |
@@ -107,6 +108,10 @@ const balance = await usdc.balanceOf("0x81c4cb77485d163D8623Cc18E1D2A3aFc93CA4f3
 ~ Have fun!
 
 #### 5. Version History
+
+- v0.7.1 (2023/10/24)
+
+  - add `prettyABI` config option to use pretty abi or not
 
 - v0.7.0 (2023/10/13)
 
